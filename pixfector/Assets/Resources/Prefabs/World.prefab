@@ -26,7 +26,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1166900006748374
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +179,7 @@ MonoBehaviour:
   loadGame: 0
   damageAnimationLength: 0.3
   attackAnimationLength: 0.3
-  transformAnimationLength: 0.3
+  transformAnimationLength: 0.1
   attackAnimationStretch: 1.5
   maxLifeDistributionModifier: 1.2
   attackReposValue: 0.2
@@ -195,12 +195,12 @@ MonoBehaviour:
   canvas: {fileID: 0}
   background: {fileID: 1166900006748374}
   endPixel: {fileID: 1380913372099772}
-  removeRowCanditate: {fileID: 0}
   initMoney: 0
   rainbowBackground: {fileID: 1098033145780278}
   nameGoodPixel: GoodPixel
   nameBadPixel: BadPixel
   nameEndPixel: EndPixel
+  hasDragged: 0
 --- !u!114 &114605908193345390
 MonoBehaviour:
   m_ObjectHideFlags: 1

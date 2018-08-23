@@ -108,8 +108,10 @@ MonoBehaviour:
   showBtnUpperThreshold: 100
   showBtnLowerThreshold: 10
   moveUpBtn: {fileID: 0}
+  world: {fileID: 0}
   lerpTime: 1
   btnLerpTime: 0.5
+  movementDisabled: 0
 --- !u!114 &114558510836939666
 MonoBehaviour:
   m_ObjectHideFlags: 1

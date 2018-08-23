@@ -12,13 +12,13 @@ public class cameraScript : MonoBehaviour
     public float showBtnUpperThreshold;
     public float showBtnLowerThreshold;
     public GameObject moveUpBtn;
-    
+    public GameObject world;
     Vector3 startPos;
     Vector3 endPos;
     public float lerpTime = 1;
     float currentLerpTime = 0;
     bool lerping = false;
-
+    bool camSticky=false;
     Color startColor;
     Color endColor;
     public float btnLerpTime = 0.5f;
@@ -41,7 +41,7 @@ public class cameraScript : MonoBehaviour
     void Update()
     {
         manageLerp();
-        manageInput();
+        if(!camSticky)manageInput();
         checkBounds();
         
     }
@@ -63,9 +63,10 @@ public class cameraScript : MonoBehaviour
     int oldFingerCount = 0;
     private void manageInput()
     {
-        // if(!movementDisabled&&Input.GetMouseButton(0)&&((Input.touchCount==1&&oldFingerCount<=1)
+        // if(!movementDisabled&&Input.GetMouseButton(0)&&((Input.touchCount==1&&oldFingerCount<=1)))
         if (!movementDisabled && Input.GetMouseButton(0))
         {
+      
             oldFingerCount = Input.touchCount;
             oldPos = newPos;
             newPos = Input.mousePosition.y;
@@ -78,7 +79,7 @@ public class cameraScript : MonoBehaviour
                 Vector3 newPosition = transform.position;
                 newPosition.y += ((oldPos - newPos) * panSpeedModifier);
                 transform.position = newPosition;
-
+                world.GetComponent<worldscript>().hasDragged = true;
             }
         }
         else
@@ -88,17 +89,13 @@ public class cameraScript : MonoBehaviour
             {
                 velocity = Vector3.zero;
                 targetPosition = new Vector3(transform.position.x, transform.position.y + panDistanceModifier * (oldPos - newPos) * panSpeedModifier, transform.position.z);
-              /*  lerping = true;
-                startPos = transform.position;
-                endPos = new Vector3(transform.position.x, transform.position.y+panDistanceModifier*(oldPos-newPos)*panSpeedModifier, transform.position.z);
-                currentLerpTime = 0;
-                transType = 1;*/
             }
             oldPos = -1;
             newPos = -1;
         }
         
     }
+ 
     private void manageLerp()
     {
         if (!lerpingBtn)
@@ -189,17 +186,18 @@ public class cameraScript : MonoBehaviour
    
     public void moveUp()
     {
-
+        if (!camSticky) return;
         velocity = Vector3.zero;
         targetPosition = Vector3.zero;
         if (!lerping)
         {
             lerping = true;
             startPos = transform.position;
-            endPos = new Vector3(transform.position.x, lowerBound, transform.position.z);
+            endPos = new Vector3(transform.position.x, lowerBound+10, transform.position.z);
             currentLerpTime = 0;
             transType = 0;
         }
+        else endPos = new Vector3(transform.position.x, lowerBound+10, transform.position.z);
     }
     public void setLowerBound(float lower)
     {
@@ -208,5 +206,11 @@ public class cameraScript : MonoBehaviour
     public void setUpperBound(float upper)
     {
         upperBound = upper;
+    }
+
+    public void stickyCamValueChanged()
+    {
+        camSticky = !camSticky;
+        moveUp();
     }
 }

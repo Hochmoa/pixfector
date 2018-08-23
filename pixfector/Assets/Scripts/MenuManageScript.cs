@@ -85,6 +85,14 @@ public class MenuManageScript : MonoBehaviour
         }
         upgradeScript.updateValues();
     }
+
+    internal void setSliders(Color c)
+    {
+        sliderR.GetComponent<UnityEngine.UI.Slider>().value = c.r;
+        sliderB.GetComponent<UnityEngine.UI.Slider>().value = c.g;
+        sliderB.GetComponent<UnityEngine.UI.Slider>().value = c.b;
+    }
+
     public void buildUpgradeMenu()
     {
         upgradeScript.scrollViewContent = scrollViewContent;
@@ -94,15 +102,15 @@ public class MenuManageScript : MonoBehaviour
         upgradeScript.buttonHeight = 257;
         upgradeScript.margin = 10;
       //  upgradeScript.currentY = upgradeScript.buttonHeight;
-        upgradeScript.addUpgrade(1, 1.07f, "Pixel Damage", " Damage", upgradeScript.UpgradeType.pixelBaseDamage,-1);
+        upgradeScript.addUpgrade(1, 1.07f, "Pixel Damage", " Damage", upgradeScript.UpgradeType.pixelBaseDamage,999999999);
         upgradeScript.addUpgrade(10, 1.07f, "Pixel Attack Speed", " s", upgradeScript.UpgradeType.pixelAttackSpeed,20);
-        upgradeScript.addUpgrade(100, 1.07f, "Pixel Crit Chance", " %", upgradeScript.UpgradeType.pixelCritChance,-1);
-        upgradeScript.addUpgrade(1000, 1.07f, "Pixel Crit Damage", " %", upgradeScript.UpgradeType.pixelCritDamage, -1);
-        upgradeScript.addUpgrade(4, 1.07f, "Click Damage", " Damage", upgradeScript.UpgradeType.clickBaseDamage, -1);
-        upgradeScript.addUpgrade(400, 1.07f, "Click Crit Chance", "  %", upgradeScript.UpgradeType.clickCritChance, -1);
-        upgradeScript.addUpgrade(4000, 1.07f, "Click Crit Damage", " %", upgradeScript.UpgradeType.clickCritDamage, -1);
-        upgradeScript.addUpgrade(4000, 1.07f, "Click Radius", " %", upgradeScript.UpgradeType.clickRadius, -1);
-        upgradeScript.addUpgrade(4000, 1.07f, "Pixel Value Increase", " %", upgradeScript.UpgradeType.moneyPerKill, -1);
+        upgradeScript.addUpgrade(100, 1.07f, "Pixel Crit Chance", " %", upgradeScript.UpgradeType.pixelCritChance, 999999999);
+        upgradeScript.addUpgrade(1000, 1.07f, "Pixel Crit Damage", " %", upgradeScript.UpgradeType.pixelCritDamage, 999999999);
+        upgradeScript.addUpgrade(4, 1.07f, "Click Damage", " Damage", upgradeScript.UpgradeType.clickBaseDamage, 999999999);
+        upgradeScript.addUpgrade(400, 1.07f, "Click Crit Chance", "  %", upgradeScript.UpgradeType.clickCritChance, 999999999);
+        upgradeScript.addUpgrade(4000, 1.07f, "Click Crit Damage", " %", upgradeScript.UpgradeType.clickCritDamage, 999999999);
+        upgradeScript.addUpgrade(4000, 1.07f, "Click Radius", " Tiles", upgradeScript.UpgradeType.clickRadius, 5);
+        upgradeScript.addUpgrade(4000, 1.07f, "Pixel Value Increase", " %", upgradeScript.UpgradeType.moneyPerKill, 999999999);
         upgradeScript.updateValues();
     }
 
@@ -141,6 +149,8 @@ public class MenuManageScript : MonoBehaviour
         return "-1";
 
     }
+
+
     // Update is called once per frame
     void Update()
     {

@@ -1,4 +1,9 @@
-Click Rechte seite
-Farbänderung nachdem damage ani fertig ist
-upgrades cappen
 bilder für click radius und money
+
+wenn overkill, dann cascadingDamage auf -life setzen. beim check dur
+sehr schnelle infektion nach oben
+bug: camera ruckelt nach
+bug: pixels werden nicht ganz gros
+
+Spaeter:
+multiklick

@@ -53,12 +53,12 @@ public static class upgradeScript
     public class Upgrade
     {
 
-        public Upgrade(float basePrice,float exponentialCost, string upgradeText, string effectText, UpgradeType upgradeType,int m)
+        public Upgrade(float basePrice,float exponentialCost, string upgradeText, string effectText, UpgradeType upgradeType,int maxLevel)
         {
             this.basePrice = basePrice;
             exp = exponentialCost;
             level = 1;
-            this.m = m;
+            this.maxLevel = maxLevel;
             this.upgradeText = upgradeText;
             this.effectText = effectText;
             this.upgradeType = upgradeType;
@@ -67,7 +67,7 @@ public static class upgradeScript
         float basePrice;//base Price
         float exp;//expGrowth Price
         int level;//level
-        int m;//maxLevel
+        int maxLevel;//maxLevel
         string upgradeText;
         public UpgradeType upgradeType;
         GameObject button;
@@ -85,6 +85,9 @@ public static class upgradeScript
                 upgradeCount = (int)Mathf.Floor(Mathf.Log((float) ((MenuManageScript.money*(exp - 1)) / (basePrice *(Mathf.Pow(exp,level)))) + 1,exp));
                 if (upgradeCount == 0) upgradeCount = 1;
             }
+            
+            if (level + upgradeCount > maxLevel) upgradeCount = maxLevel - level;
+            
             currentUgradePrice = basePrice * (Mathf.Pow(exp, level) * ((Mathf.Pow(exp, upgradeCount) - 1) / (exp - 1)));
           
   
@@ -92,6 +95,7 @@ public static class upgradeScript
 
         }
         static string iconName = "IconUpgrade";
+        static string iconCurrencyName = "IconCurrency";
         static string levelName = "TextLevel";
         static string upgradeAmountName = "TextUpgrade";
         static string upgradeCostName = "TextPrice";
@@ -103,7 +107,7 @@ public static class upgradeScript
         {
             Text[] texts = button.GetComponentsInChildren<Text>();
             Image img = button.GetComponentInChildren<Image>();
-            if (calcUpgradeCost())
+            if (level != maxLevel&&calcUpgradeCost())
             {
                 button.GetComponent<Button>().interactable = true;
             }
@@ -125,7 +129,25 @@ public static class upgradeScript
                 }
                 else if (child.name == upgradeCostName)
                 {
-                    child.GetComponent<Text>().text = MenuManageScript.getFormattedValue(currentUgradePrice,2);
+                    if (level != maxLevel) child.GetComponent<Text>().text = MenuManageScript.getFormattedValue(currentUgradePrice,2);
+                    else
+                    {
+                        child.GetComponent<Text>().enabled = false;
+                    }
+                }
+                else if (child.name == iconCurrencyName)
+                {
+                    if (level == maxLevel) child.GetComponent<Image>().enabled = false;
+                   
+                }
+                else if (child.name == titleName)
+                {
+                    child.GetComponent<Text>().text = upgradeText;
+                }
+                else if (child.name == upgradeAmountName)
+                {
+                    if(level != maxLevel) child.GetComponent<Text>().text = "Buy " + upgradeCount + " for";
+                    else child.GetComponent<Text>().text = "MAXED";
                 }
                 else if (child.name == effectName)
                 {
@@ -150,13 +172,7 @@ public static class upgradeScript
                     }
 
                 }
-                else if (child.name == titleName)
-                {
-                    child.GetComponent<Text>().text = upgradeText;
-                } else if(child.name ==upgradeAmountName)
-                {
-                    child.GetComponent<Text>().text = "Buy " + upgradeCount + " for";
-                }
+            
             }
         }
         public float getEffectValue()

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 public class worldscript : MonoBehaviour
 {
 
@@ -40,7 +40,7 @@ public class worldscript : MonoBehaviour
     public GameObject canvas;
     public GameObject background;
     public GameObject endPixel;
-    public GameObject removeRowCanditate;
+    GameObject removeRowCanditate;
     public double initMoney;
 
     //public Camera camera;
@@ -58,10 +58,12 @@ public class worldscript : MonoBehaviour
 
     void Start()
     {
+        
         canvas.GetComponent<MenuManageScript>().buildUpgradeMenu();
         TextManager.Initialize();
         setPixelColor(pixelColor);
         setPixelScriptValues();
+        canvas.GetComponent<MenuManageScript>().setSliders(pixelColor);
         bgTexture = rainbowBackground.GetComponent<SpriteRenderer>().sprite.texture;
 
         background.transform.localScale = new Vector3(fakePixels.transform.localScale.x, 10 * upperBound, 1);
@@ -214,14 +216,17 @@ public class worldscript : MonoBehaviour
         return pixel;
     }
     bool isTimeScale = false;
+    public bool hasDragged;
     private void Update()
     {
 
-        if (Input.GetMouseButtonDown(0))
+        if (!hasDragged&&Input.GetMouseButtonUp(0)&&!EventSystem.current.IsPointerOverGameObject())
         {
+            Debug.Log("Apply Click Dmg");
             applyClickDamage((int)upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.clickRadius));
         }
-        if(Input.GetKeyDown(KeyCode.Minus))
+        if (Input.GetMouseButtonDown(0)) hasDragged = false;
+        if (Input.GetKeyDown(KeyCode.Minus))
         {
             Time.timeScale = isTimeScale?0.5f:1f;
             isTimeScale = !isTimeScale;
@@ -246,7 +251,10 @@ public class worldscript : MonoBehaviour
                 continue;
             }
             bool isCrit = false;
-            bool died = p.GetComponent<pixelScript>().attack(toInfect, calculateDamage(out isCrit, AttackType.PIXEL), isCrit);
+            float dmg = p.GetComponent<pixelScript>().cascadingDamage;
+            
+            if(dmg==-1) dmg =calculateDamage(out isCrit, AttackType.PIXEL);
+            bool died = p.GetComponent<pixelScript>().attack(toInfect, dmg, isCrit);
             if (died)
             {
                 canvas.GetComponent<MenuManageScript>().changeMoney(p.GetComponent<pixelScript>().getValue());
@@ -270,6 +278,7 @@ public class worldscript : MonoBehaviour
     public float calculateDamage(out bool isCrit, AttackType type)
     {
         float dmg = type == AttackType.PIXEL ? upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelBaseDamage) : upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.clickBaseDamage);
+       // dmg *= 10000000000000f;
         if (UnityEngine.Random.value < (type == AttackType.PIXEL ? upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelCritChance) : upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.clickCritChance)))
         {
             dmg *= type == AttackType.PIXEL ? upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelCritDamage) : upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.clickCritDamage);
@@ -396,7 +405,7 @@ public class worldscript : MonoBehaviour
         killPixel(rRef);
         killPixel(p);
         lowerBound++;
-
+        cam.GetComponent<cameraScript>().moveUp();
         upperBound++;
         createRow(upperBound);
         if (lowerBound % 400 == 250)

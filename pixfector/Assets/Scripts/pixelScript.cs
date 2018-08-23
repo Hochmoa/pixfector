@@ -47,7 +47,7 @@ public class pixelScript : MonoBehaviour
             bgInstance.transform.parent = null;
             bgInstance.transform.Translate(0, 0, 1);
             bgInstance.GetComponent<SpriteRenderer>().color = bgColor;
-
+        cascadingDamage = -1;
     }
     public void setTag(string tag)
     {
@@ -90,15 +90,16 @@ public class pixelScript : MonoBehaviour
         if (transform.position.x <= width / 2) vertLife = transform.position.x;
         else if (transform.position.x > width / 2) vertLife = width - transform.position.x;
 
-        return Mathf.Pow(1.07f, vertLifeIncreaseModifier * vertLife + y * (1 + (maxLifeDistributionModifier / 2 - (Random.value * maxLifeDistributionModifier))));
-       // return vertLifeIncreaseModifier*vertLife + y*(1+(maxLifeDistributionModifier/2-(Random.value*maxLifeDistributionModifier)));
+        // return Mathf.Pow(1.07f, vertLifeIncreaseModifier * vertLife + y * (1 + (maxLifeDistributionModifier / 2 - (Random.value * maxLifeDistributionModifier))));
+        // return vertLifeIncreaseModifier*vertLife + y*(1+(maxLifeDistributionModifier/2-(Random.value*maxLifeDistributionModifier)));
+        return Mathf.Pow(1.07f, y);
     }
 
     // Update is called once per frame
 
     void Update()
     {
-        if (coolDown != 0)
+        if (coolDown != 0&&tag==nameGoodPixel)
         {
             coolDown -= Time.deltaTime;
             if (coolDown < 0) coolDown = 0;
@@ -124,6 +125,10 @@ public class pixelScript : MonoBehaviour
                 {
                     lerpBackgroundInstance = null;
                 }
+                if (result == Lerp.LerpResult.IMMEDIATEATTACK)
+                {
+                    //coolDown = 0;
+                }
             }
         }
         foreach (var item in toRemove)
@@ -138,10 +143,7 @@ public class pixelScript : MonoBehaviour
    
 
     }
-    public bool canAttack()
-    {
-        return coolDown == 0;
-    }
+
     public void resetAttackCoolDown(bool distribute)
     {
        if(distribute) coolDown = upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelAttackSpeed)+Random.value * attackSpeedDistributionModifier - attackSpeedDistributionModifier / 2;
@@ -166,8 +168,10 @@ public class pixelScript : MonoBehaviour
         gameObject.tag = nameGoodPixel;
         resetAttackCoolDown(true);
         transformtriggered = true;
+        float length = transformAnimationLength;
+        //if (life <-maxLife) length = 0;
         world.GetComponent<worldscript>(). getNeighbours(this.gameObject);
-        lerpList.Add(new Lerp(gameObject.transform,Lerp.VectorType.SCALE, Lerp.FunctionType.SMOOTHIO,Vector3.zero,new Vector3(100,100),transformAnimationLength,false, Lerp.AnimationType.TRANSFORM,0,Lerp.LerpResult.NONE));
+        lerpList.Add(new Lerp(gameObject.transform,Lerp.VectorType.SCALE, Lerp.FunctionType.SMOOTHIO,Vector3.zero,new Vector3(100,100),length,false, Lerp.AnimationType.TRANSFORM,0,Lerp.LerpResult.IMMEDIATEATTACK));
 
     }
     public int getValue()
@@ -177,7 +181,7 @@ public class pixelScript : MonoBehaviour
     public void triggerDamageAnimation(float delay)
     {
         if(transformtriggered)return;
-        float scale = (life / maxLife) * 100;
+        float scale = (life<0?0:life/ maxLife) * 100;
         Vector3 endScale = Vector3.zero;
         if (scale > 10)
         {
@@ -191,10 +195,12 @@ public class pixelScript : MonoBehaviour
 
         if (lerpDamageInstance == null)
         {
+            float length = transformAnimationLength;
+           
             lerpDamageInstance = new Lerp(gameObject.transform, Lerp.VectorType.SCALE, Lerp.FunctionType.LINEAR,
                 transform.localScale,
                 endScale,
-                damageAnimationLength, false,
+                length, false,
                 Lerp.AnimationType.DAMAGE, delay, Lerp.LerpResult.DELETEDAMAGEANIMATIONINSTANCE);
 
 
@@ -262,17 +268,22 @@ public class pixelScript : MonoBehaviour
     {
         return lerpList.Count != 0;
     }
+    public bool canAttack()
+    {
+        return coolDown == 0;
+    }
     public bool tryToDamage(float damage, bool isCrit, float delay)
     {
         if (isImmune()) return false;
         if (damage < 1) damage = 1;
         TextManager.CreateText(damage, this.transform, isCrit,delay);
         life -= damage;
-        if (life < 0) life = 0;
-        triggerDamageAnimation(delay);
+        
+        if (!checkOverkill())triggerDamageAnimation(delay);
 
         if (life <= 0)
         {
+           
             return true;
         }
             /*  
@@ -285,7 +296,23 @@ public class pixelScript : MonoBehaviour
 
             return false;
     }
-
+    public bool checkOverkill()
+    {
+        if (life < -maxLife)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = pixelColor;
+            gameObject.tag = nameGoodPixel;
+            coolDown = 0;
+            transformtriggered = true;
+            cascadingDamage = -life;
+            world.GetComponent<worldscript>().getNeighbours(this.gameObject);
+            transform.localScale = new Vector2(100, 100);
+            return true;
+        }
+        resetAttackCoolDown(true);
+        return false;
+    }
+    public float cascadingDamage;
     public static void setAttackSpeed(bool init)
     {
       
@@ -294,6 +321,7 @@ public class pixelScript : MonoBehaviour
             damageAnimationLength = upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelAttackSpeed);
             transformAnimationLength = upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelAttackSpeed);
             attackAnimationLength = upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelAttackSpeed);
+
         }
         else
         {
