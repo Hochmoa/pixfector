@@ -51,6 +51,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4207778276304878}
+  - component: {fileID: 114605908193345390}
   m_Layer: 0
   m_Name: End
   m_TagString: EndPixel
@@ -173,7 +174,7 @@ MonoBehaviour:
   attackSpeedDistributionModifier: 0.5
   width: 16
   upperBound: 54
-  pixelColor: {r: 0.23623048, g: 0.6603774, b: 0.22739409, a: 1}
+  pixelColor: {r: 0.3301887, g: 0, b: 0.24072364, a: 1}
   backgroundPixelColor: {r: 0, g: 0, b: 0, a: 0}
   loadGame: 0
   damageAnimationLength: 0.3
@@ -200,6 +201,22 @@ MonoBehaviour:
   nameGoodPixel: GoodPixel
   nameBadPixel: BadPixel
   nameEndPixel: EndPixel
+--- !u!114 &114605908193345390
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1380913372099772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8627d9d7e584c6f4bbd2164de01213b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  neighbours:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!212 &212116531838669512
 SpriteRenderer:
   m_ObjectHideFlags: 1
