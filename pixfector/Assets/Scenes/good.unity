@@ -576,6 +576,21 @@ Prefab:
       propertyPath: canvas
       value: 
       objectReference: {fileID: 1712667342}
+    - target: {fileID: 114381206838597084, guid: e20415f9d0408dd43918addd54a82cd9,
+        type: 2}
+      propertyPath: pixelColor.r
+      value: 0.24241634
+      objectReference: {fileID: 0}
+    - target: {fileID: 114381206838597084, guid: e20415f9d0408dd43918addd54a82cd9,
+        type: 2}
+      propertyPath: pixelColor.g
+      value: 0.21293166
+      objectReference: {fileID: 0}
+    - target: {fileID: 114381206838597084, guid: e20415f9d0408dd43918addd54a82cd9,
+        type: 2}
+      propertyPath: pixelColor.b
+      value: 0.8207547
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e20415f9d0408dd43918addd54a82cd9, type: 2}
   m_IsPrefabAsset: 0

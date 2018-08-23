@@ -174,7 +174,7 @@ MonoBehaviour:
   attackSpeedDistributionModifier: 0.5
   width: 16
   upperBound: 54
-  pixelColor: {r: 1, g: 1, b: 1, a: 1}
+  pixelColor: {r: 0.24241634, g: 0.21293166, b: 0.8207547, a: 1}
   backgroundPixelColor: {r: 0, g: 0, b: 0, a: 0}
   loadGame: 0
   damageAnimationLength: 0.3
