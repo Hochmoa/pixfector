@@ -91,7 +91,7 @@ public class pixelScript : MonoBehaviour
         else if (transform.position.x > width / 2) vertLife = width - transform.position.x;
 
         return Mathf.Pow(1.07f, vertLifeIncreaseModifier * vertLife + y * (1 + (maxLifeDistributionModifier / 2 - (Random.value * maxLifeDistributionModifier))));
-        return vertLifeIncreaseModifier*vertLife + y*(1+(maxLifeDistributionModifier/2-(Random.value*maxLifeDistributionModifier)));
+       // return vertLifeIncreaseModifier*vertLife + y*(1+(maxLifeDistributionModifier/2-(Random.value*maxLifeDistributionModifier)));
     }
 
     // Update is called once per frame
@@ -116,6 +116,14 @@ public class pixelScript : MonoBehaviour
                     addTransform = true;
                 }
                 toRemove.Add(item);
+                if(result == Lerp.LerpResult.DELETEDAMAGEANIMATIONINSTANCE)
+                {
+                    lerpDamageInstance = null;
+                }
+                if (result == Lerp.LerpResult.DELETEBACKGROUNDANIMATIONINSTANCE)
+                {
+                    lerpBackgroundInstance = null;
+                }
             }
         }
         foreach (var item in toRemove)
@@ -156,7 +164,9 @@ public class pixelScript : MonoBehaviour
         }
         gameObject.GetComponent<SpriteRenderer>().color = pixelColor;
         gameObject.tag = nameGoodPixel;
+        resetAttackCoolDown(true);
         transformtriggered = true;
+        world.GetComponent<worldscript>(). getNeighbours(this.gameObject);
         lerpList.Add(new Lerp(gameObject.transform,Lerp.VectorType.SCALE, Lerp.FunctionType.SMOOTHIO,Vector3.zero,new Vector3(100,100),transformAnimationLength,false, Lerp.AnimationType.TRANSFORM,0,Lerp.LerpResult.NONE));
 
     }
@@ -177,23 +187,39 @@ public class pixelScript : MonoBehaviour
         {
             endScale = new Vector3(10, 10);
         }
-       // float damageAnimationLength = (transform.localScale.x - endScale.x)/400;
+        // float damageAnimationLength = (transform.localScale.x - endScale.x)/400;
 
-
-            lerpList.Add(new Lerp(gameObject.transform, Lerp.VectorType.SCALE, Lerp.FunctionType.LINEAR,
+        if (lerpDamageInstance == null)
+        {
+            lerpDamageInstance = new Lerp(gameObject.transform, Lerp.VectorType.SCALE, Lerp.FunctionType.LINEAR,
                 transform.localScale,
                 endScale,
                 damageAnimationLength, false,
-                Lerp.AnimationType.DAMAGE, delay, Lerp.LerpResult.NONE));
+                Lerp.AnimationType.DAMAGE, delay, Lerp.LerpResult.DELETEDAMAGEANIMATIONINSTANCE);
+
+
+            lerpList.Add(lerpDamageInstance);
+        }
+        else
+        {
+            lerpDamageInstance.changeEndVector(endScale);
+        }
         if (upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.pixelAttackSpeed) >= disableAnimationThreshold)
         {
-            lerpList.Add(new Lerp(bgInstance.transform, Lerp.VectorType.SCALE, Lerp.FunctionType.LINEAR,
-                       new Vector3(100, 100, 0),
-                       endScale,
-                       damageAnimationLength, true,
-                       Lerp.AnimationType.DAMAGEBACKGROUND, delay, Lerp.LerpResult.NONE));
+
+            if (lerpBackgroundInstance == null)
+            {
+                lerpBackgroundInstance = new Lerp(bgInstance.transform, Lerp.VectorType.SCALE, Lerp.FunctionType.LINEAR,
+                           bgInstance.transform.localScale,
+                           endScale,
+                           damageAnimationLength, true,
+                           Lerp.AnimationType.DAMAGEBACKGROUND, delay, Lerp.LerpResult.DELETEBACKGROUNDANIMATIONINSTANCE);
+                lerpList.Add(lerpBackgroundInstance);
+            }
         }
     }
+    Lerp lerpDamageInstance;
+    Lerp lerpBackgroundInstance;
     public void triggerAttackAnimation(float direction)
     {
         Vector3 endScale=Vector3.zero;
@@ -247,14 +273,17 @@ public class pixelScript : MonoBehaviour
 
         if (life <= 0)
         {
-            setTag(nameGoodPixel);
-            transform.Translate(new Vector3(0, 0, -1));
-
-            resetAttackCoolDown(true);
             return true;
         }
-       
-        return false;
+            /*  
+           setTag(nameGoodPixel);
+           transform.Translate(new Vector3(0, 0, -1));
+
+           resetAttackCoolDown(true);
+           return true;
+       }*/
+
+            return false;
     }
 
     public static void setAttackSpeed(bool init)

@@ -63,7 +63,8 @@ public class cameraScript : MonoBehaviour
     int oldFingerCount = 0;
     private void manageInput()
     {
-        if(!movementDisabled&&Input.GetMouseButton(0)&&Input.touchCount==1&&oldFingerCount<=1)
+        // if(!movementDisabled&&Input.GetMouseButton(0)&&((Input.touchCount==1&&oldFingerCount<=1)
+        if (!movementDisabled && Input.GetMouseButton(0))
         {
             oldFingerCount = Input.touchCount;
             oldPos = newPos;

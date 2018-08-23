@@ -18,7 +18,10 @@ public class Lerp
     }
     public enum LerpResult
     {
-        NONE,DISABLEBACKGROUD,DISABLEMENU,SHOWMENU,NOTFINISHED
+        NONE,DISABLEBACKGROUD,DISABLEMENU,SHOWMENU,NOTFINISHED,
+        DELETEATTACKANIMATIONINSTANCE,
+        DELETEBACKGROUNDANIMATIONINSTANCE,
+        DELETEDAMAGEANIMATIONINSTANCE
     }
     System.Object colorObj;
     Transform transform;
@@ -62,7 +65,13 @@ public class Lerp
         this.lerpResult = lerpResult;
         this.colorObj = colorObj;
     }
-
+    public void changeEndVector(Vector3 end)
+    {
+        if(animationType==AnimationType.DAMAGE)
+        {
+            this.end = end;
+        }
+    }
     public bool isFinished()
     {
         return currentTime >= animationLength;

@@ -74,7 +74,7 @@ public class worldscript : MonoBehaviour
         else
         {
 
-            for (int height = 0; height < upperBound; height++)
+            for (int height = 0; height <= upperBound; height++)
             {
                 createRow(height);
 
@@ -137,32 +137,41 @@ public class worldscript : MonoBehaviour
         center.name = "Center";
         int x = -distance;
         int y = -distance;
+        
         GameObject affectedPixel = getPixelRelativeToPixel(center, ref x, ref y);
+        int sizeX = distance * 2 + 1+x;
+        int sizeY = distance * 2 + 1+y;
+        if(affectedPixel.transform.position.x+sizeX>=width)
+        {
+            sizeX -= (int)(affectedPixel.transform.position.x + sizeX- width);
+        }
         List<KeyValuePair<float, GameObject>> affectedPixels = new List<KeyValuePair<float, GameObject>>();
         bool toLeft = false;
-        for (int j = 0; j < distance * 2 + 1; j++)
+        for (int j = 0; j < sizeY; j++)
         {
 
             //das problem so loesen: es wird ein rechteck bestimmt, welches am besten passt
-            for (int i = 0; i < distance * 2; i++)
+            for (int i = 0; i < sizeX; i++)
             {
 
                 affectedPixels.Add(new KeyValuePair<float, GameObject>(Vector2.Distance(center.transform.position, affectedPixel.transform.position), affectedPixel));
-                if (toLeft)
+                if (i != sizeX - 1)
                 {
-                    if (affectedPixel.GetComponent<neighbourScript>().neighbours[3] == null) break;
-                    affectedPixel = affectedPixel.GetComponent<neighbourScript>().neighbours[3];
-                }
-                else
-                {
-                    if (affectedPixel.GetComponent<neighbourScript>().neighbours[1] == null) break;
-                    affectedPixel = affectedPixel.GetComponent<neighbourScript>().neighbours[1];
+                    if (toLeft)
+                    {
+                        affectedPixel = affectedPixel.GetComponent<neighbourScript>().neighbours[3];
+                    }
+                    else
+                    {
+                        affectedPixel = affectedPixel.GetComponent<neighbourScript>().neighbours[1];
+                    }
                 }
 
             }
-            if (affectedPixel.GetComponent<neighbourScript>().neighbours[0] == null) break;
+
             affectedPixels.Add(new KeyValuePair<float, GameObject>(Vector2.Distance(center.transform.position, affectedPixel.transform.position), affectedPixel));
             affectedPixel = affectedPixel.GetComponent<neighbourScript>().neighbours[0];
+            if (affectedPixel.tag==nameEndPixel) break;
             toLeft = !toLeft;
 
 
@@ -180,12 +189,6 @@ public class worldscript : MonoBehaviour
                 getNeighbours(item.Value);
             }
         }
-
-
-
-
-
-
     }
 
     private GameObject getPixelRelativeToPixel(GameObject pixel, ref int x, ref int y)
@@ -196,21 +199,21 @@ public class worldscript : MonoBehaviour
         }
         while (x != 0)
         {
-            x++;
-            if (pixel.GetComponent<neighbourScript>().neighbours[3] == null) continue;
-            pixel = pixel.GetComponent<neighbourScript>().neighbours[3];
            
+            if (pixel.GetComponent<neighbourScript>().neighbours[3].tag == nameEndPixel) break;
+            pixel = pixel.GetComponent<neighbourScript>().neighbours[3];
+            x++;
         }
         while (y != 0)
         {
-            y++;
-            if (pixel.GetComponent<neighbourScript>().neighbours[2] == null) return pixel;
+           
+            if (pixel.GetComponent<neighbourScript>().neighbours[2].tag == nameEndPixel) return pixel;
             pixel = pixel.GetComponent<neighbourScript>().neighbours[2];
-            
+            y++;
         }
         return pixel;
     }
-
+    bool isTimeScale = false;
     private void Update()
     {
 
@@ -218,7 +221,12 @@ public class worldscript : MonoBehaviour
         {
             applyClickDamage((int)upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.clickRadius));
         }
-
+        if(Input.GetKeyDown(KeyCode.Minus))
+        {
+            Time.timeScale = isTimeScale?0.5f:1f;
+            isTimeScale = !isTimeScale;
+        }
+            
         List<GameObject> toRemove = new List<GameObject>();
         int initInfCount = infectPixels.Count;
         for (int i = 0; i < initInfCount; i++)
@@ -242,7 +250,7 @@ public class worldscript : MonoBehaviour
             if (died)
             {
                 canvas.GetComponent<MenuManageScript>().changeMoney(p.GetComponent<pixelScript>().getValue());
-                getNeighbours(p.GetComponent<neighbourScript>().neighbours[toInfect]);
+              
             }
         }
         foreach (var item in toRemove)
@@ -311,7 +319,8 @@ public class worldscript : MonoBehaviour
     {
         for (int i = 0; i < width; i++)
         {
-            createPixel(i, height, nameBadPixel);
+            GameObject p=createPixel(i, height, nameBadPixel);
+         //   p.GetComponent<neighbourScript>().neighbours[2].GetComponent<neighbourScript>().neighbours[0] = p;
         }
     }
     private bool isRowFull(GameObject p)
@@ -372,6 +381,7 @@ public class worldscript : MonoBehaviour
         {
             GameObject rm = rRef;
             rRef = rRef.GetComponent<neighbourScript>().neighbours[1];
+            rm.GetComponent<neighbourScript>().neighbours[0].GetComponent<neighbourScript>().neighbours[2]=endPixel ;
             killPixel(rm);
         }
 
@@ -379,6 +389,7 @@ public class worldscript : MonoBehaviour
         {
             GameObject rm = lRef;
             lRef = lRef.GetComponent<neighbourScript>().neighbours[3];
+            rm.GetComponent<neighbourScript>().neighbours[0].GetComponent<neighbourScript>().neighbours[2] = endPixel;
             killPixel(rm);
         }
         killPixel(lRef);
@@ -386,8 +397,8 @@ public class worldscript : MonoBehaviour
         killPixel(p);
         lowerBound++;
 
-        createRow(upperBound);
         upperBound++;
+        createRow(upperBound);
         if (lowerBound % 400 == 250)
         {
             if (oldPicBgPrefab != null) Destroy(oldPicBgPrefab);
@@ -412,28 +423,16 @@ public class worldscript : MonoBehaviour
         return false;
     }
 
-    private void getNeighbours(GameObject p)
+    public void getNeighbours(GameObject p)
     {
         int x = (int)p.transform.position.x;
         int y = (int)p.transform.position.y;
-        int borderPixelVal = isBorderPixel(p);
-        if (borderPixelVal != -1)
+        bool[] borders = isBorderPixel(p);
+        for (int i = 0; i < borders.Length; i++)
         {
-            if (borderPixelVal < 4) p.GetComponent<neighbourScript>().neighbours[borderPixelVal] = endPixel;
-            else
-            {
-                p.GetComponent<neighbourScript>().neighbours[2] = endPixel;
-                if (borderPixelVal == 4)//rechts unten
-                {
-                    p.GetComponent<neighbourScript>().neighbours[3] = endPixel;
-                }
-                else
-                {
-                    p.GetComponent<neighbourScript>().neighbours[1] = endPixel;
-                }
-            }
-
+            if(borders[i])p.GetComponent<neighbourScript>().neighbours[i] = endPixel;
         }
+
         GameObject neigbour;
         bool found = pixels.TryGetValue(new Vector2(x, y + 1), out neigbour);
         if (found)
@@ -467,19 +466,20 @@ public class worldscript : MonoBehaviour
         if (!p.GetComponent<pixelScript>().CompareTag(nameBadPixel)) infectPixels.Add(p);
     }
 
-    private int isBorderPixel(GameObject p)
+    private bool[] isBorderPixel(GameObject p)
     {
-
+        bool[] borders = new bool[] {false,false,false,false};
         float x = p.transform.position.x;
         float y = p.transform.position.y;
-        if (x == width - 1 && y == 0) return 5;
-        if (x == 0 && y == 0) return 4;
+        if (y == upperBound) borders[0] = true;
+        if (x == width - 1) borders[1] = true;
+        if (y == 0) borders[2] = true;
+        if (x == 0) borders[3] = true;
 
-        if (x == width - 1) return 1;
-        if (y == 0) return 2;
-        if (x == 0) return 3;
 
-        return -1;
+
+
+        return borders;
     }
 
 
