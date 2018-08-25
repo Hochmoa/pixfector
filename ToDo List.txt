@@ -1,4 +1,4 @@
-bilder für click radius und money
+bilder für click radius und money chains
 
 wenn overkill, dann cascadingDamage auf -life setzen. beim check dur
 sehr schnelle infektion nach oben
