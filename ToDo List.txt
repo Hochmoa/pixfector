@@ -7,3 +7,87 @@ bug: pixels werden nicht ganz gros
 blub blub
 Spaeter:
 multiklick
+
+Whitepaper:
+Start.
+StartWorld Script, determine start pixel
+Text: Once upon a time..(wait for touch)
+Camerea goes up 4 RainbowImages & text: there was a rainbow(wait for click)
+Camerea goes down
+Pixels make wave&&text:made out of pixels!(wait for click)
+In this infinite ordered spectrum of colored pixels...(wait for click)
+camera zooms to start pixel
+Text: there was one who was not fond of 685 nm..(wait for click)
+Text: (pssst.. 685nm refers to the wavelength of red...)(wait for click)
+transform pixel
+Text in big letters: I SHALL DESTROY ALL COLORS!
+camera zooms to standard
+starts infecting
+Text: help the rebelling pixel to transform enemies into pixels of its own color(click)
+Text: By clicking on pixels you can damage them(click)
+Text: If you have collected enough pixel-essence, you can upgrade your pixel's and clicks' damage(show arrow to store)(click)
+Text: Have fun!(fades out)
+
+
+
+Was noch gemacht gehört:
+Menu:
+Wen start game: Tutorial
+Wenn load: eine reihe von pixel erzeugen
+Speichern von:
+-pixelcolor r g b
+-mute unmute
+-progress
+-moneyMoney
+-3dobjectMoney
+-Levels
+menu:
+-Daten löschen
+-autostick to Center
+-credits
+-hochware
+-Start over button
+-3d objects when starting over
+-counter fue Reihen pro sekunde>1 show text "enable autoStick to center"
+-wenn attack speed>0,3 sek, animation speed=attack speed
+
+
+buy:
+-pixels,3dobjs oben
+-upgrades:
+	pixeldamage
+	attackfrequency
+	critical chance
+	critMultiplyer
+	chainChance
+	clickDamage
+	clickRadius
+	moneyperpixel
+	
+Elements:
+Lighning(dmg chain)
+Poison(dps)
+Fire(Affect neighbours)
+Darkness(Permanet vulnerbility increase)
+
+Tuerme:
+
+MG: Many shots with low damage
+Bomb: AoE damage 
+Sniper: Slow, Single hit high damage
+Homing missle: attack pixel with lowest health
+
+
+
+
+
+Credits, die zu geben sind
+Dollar Icon made by scott de jonge made by <a href="https://www.flaticon.com/authors/scott-de-jonge" title="Scott de Jonge">Scott de Jonge</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+Cog by Dave Gandy</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+Music Icon: ic8.link/5596
+Sword Icon: ic8.link/5332
+Cube by ic8.link/31400
+Scope by <div>Icons made by <a href="https://www.flaticon.com/authors/vectors-market" title="Vectors Market">Vectors Market</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+Arrow up: <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+Bullseye <div>Icons made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+Arrow by Freepik <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
