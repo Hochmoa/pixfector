@@ -4,6 +4,6 @@ wenn overkill, dann cascadingDamage auf -life setzen. beim check dur
 sehr schnelle infektion nach oben
 bug: camera ruckelt nach
 bug: pixels werden nicht ganz gros
-blub
+blub blub
 Spaeter:
 multiklick
