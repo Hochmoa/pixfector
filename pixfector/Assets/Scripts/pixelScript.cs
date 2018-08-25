@@ -14,6 +14,7 @@ public class pixelScript : MonoBehaviour
     public GameObject bgInstance;
 
     public static GameObject world;
+    public static GameObject canvas;
 
     public float life;
     public float maxLife;
@@ -92,7 +93,7 @@ public class pixelScript : MonoBehaviour
 
         // return Mathf.Pow(1.07f, vertLifeIncreaseModifier * vertLife + y * (1 + (maxLifeDistributionModifier / 2 - (Random.value * maxLifeDistributionModifier))));
         // return vertLifeIncreaseModifier*vertLife + y*(1+(maxLifeDistributionModifier/2-(Random.value*maxLifeDistributionModifier)));
-        return Mathf.Pow(1.07f, y);
+        return Mathf.Pow(1.02f, y)+10;
     }
 
     // Update is called once per frame
@@ -174,24 +175,19 @@ public class pixelScript : MonoBehaviour
         lerpList.Add(new Lerp(gameObject.transform,Lerp.VectorType.SCALE, Lerp.FunctionType.SMOOTHIO,Vector3.zero,new Vector3(100,100),length,false, Lerp.AnimationType.TRANSFORM,0,Lerp.LerpResult.IMMEDIATEATTACK));
 
     }
-    public int getValue()
+    public double getValue()
     {
-        return (int)(maxLife* upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.moneyPerKill));
+        return (maxLife* upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.moneyPerKill));
     }
     public void triggerDamageAnimation(float delay)
     {
         if(transformtriggered)return;
         float scale = (life<0?0:life/ maxLife) * 100;
         Vector3 endScale = Vector3.zero;
-        if (scale > 10)
-        {
+       
             endScale = new Vector3(scale, scale);
-        }
-        else
-        {
-            endScale = new Vector3(10, 10);
-        }
-        // float damageAnimationLength = (transform.localScale.x - endScale.x)/400;
+
+   
 
         if (lerpDamageInstance == null)
         {
@@ -274,43 +270,82 @@ public class pixelScript : MonoBehaviour
     }
     public bool tryToDamage(float damage, bool isCrit, float delay)
     {
+        
         if (isImmune()) return false;
         if (damage < 1) damage = 1;
         TextManager.CreateText(damage, this.transform, isCrit,delay);
         life -= damage;
         
-        if (!checkOverkill())triggerDamageAnimation(delay);
+        if (!checkOverkill(damage))triggerDamageAnimation(delay);
 
         if (life <= 0)
         {
-           
+            resetAttackCoolDown(true);
             return true;
         }
-            /*  
-           setTag(nameGoodPixel);
-           transform.Translate(new Vector3(0, 0, -1));
-
-           resetAttackCoolDown(true);
-           return true;
-       }*/
-
-            return false;
+        return false;
     }
-    public bool checkOverkill()
+    public bool checkOverkill(float damage)
     {
-        if (life < -maxLife)
+        if (damage > maxLife && Random.value * 100 < upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.overkillChainChance))
         {
             gameObject.GetComponent<SpriteRenderer>().color = pixelColor;
             gameObject.tag = nameGoodPixel;
             coolDown = 0;
             transformtriggered = true;
-            cascadingDamage = -life;
-            world.GetComponent<worldscript>().getNeighbours(this.gameObject);
+            
+            world.GetComponent<worldscript>().getNeighbours(gameObject);
             transform.localScale = new Vector2(100, 100);
+            lerpList.RemoveAll(x => true);
+            tryAttack(damage* upgradeScript.getUpgradeValue(upgradeScript.UpgradeType.overkillChainDamage)/100);
             return true;
         }
-        resetAttackCoolDown(true);
+        else cascadingDamage = -1;
+       
         return false;
+    }
+    //return: -1=remove,0=nothing
+    public int tryAttack(float val)
+    {
+
+
+        if (neighbourCount(nameBadPixel) == 0)
+        {
+            return -1;
+        }
+        if (isAnimating() || !canAttack()) return 0;
+        int toInfect=chooseNeighbour();
+        if (toInfect == -1)
+        {
+            return -1;
+        }
+        bool isCrit = false;
+    
+        float dmg = val==0?world.GetComponent<worldscript>().calculateDamage(out isCrit, AttackType.PIXEL):val;
+        bool died = attack(toInfect, dmg, isCrit);
+        if (died)
+        {
+            canvas.GetComponent<MenuManageScript>().changeMoney(getValue());
+
+        }
+        return 0;
+    }
+    public int chooseNeighbour()
+    {
+        int r = (int)(UnityEngine.Random.value * 4);
+        if (r == 4) r = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            int index = (r + i) % 4;
+            if ((index == 2 && GetComponent<neighbourScript>().neighbours[index] == null) ||
+                index == 2 && GetComponent<neighbourScript>().neighbours[index].name==nameEndPixel) continue;
+            if (GetComponent<neighbourScript>().neighbours[index].CompareTag(nameBadPixel))
+            {
+                return index;
+            }
+        }
+
+        return -1;
     }
     public float cascadingDamage;
     public static void setAttackSpeed(bool init)

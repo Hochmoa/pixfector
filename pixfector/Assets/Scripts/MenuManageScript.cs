@@ -59,7 +59,8 @@ public class MenuManageScript : MonoBehaviour
         }
         pixelPanel.SetActive(false);
         darkenBackground.SetActive(false);
-        changeMoney(1000000);
+        
+        
     }
     public void switchUpgradeCount()
     {
@@ -102,15 +103,17 @@ public class MenuManageScript : MonoBehaviour
         upgradeScript.buttonHeight = 257;
         upgradeScript.margin = 10;
       //  upgradeScript.currentY = upgradeScript.buttonHeight;
-        upgradeScript.addUpgrade(1, 1.07f, "Pixel Damage", " Damage", upgradeScript.UpgradeType.pixelBaseDamage,999999999);
-        upgradeScript.addUpgrade(10, 1.07f, "Pixel Attack Speed", " s", upgradeScript.UpgradeType.pixelAttackSpeed,20);
-        upgradeScript.addUpgrade(100, 1.07f, "Pixel Crit Chance", " %", upgradeScript.UpgradeType.pixelCritChance, 999999999);
-        upgradeScript.addUpgrade(1000, 1.07f, "Pixel Crit Damage", " %", upgradeScript.UpgradeType.pixelCritDamage, 999999999);
-        upgradeScript.addUpgrade(4, 1.07f, "Click Damage", " Damage", upgradeScript.UpgradeType.clickBaseDamage, 999999999);
-        upgradeScript.addUpgrade(400, 1.07f, "Click Crit Chance", "  %", upgradeScript.UpgradeType.clickCritChance, 999999999);
-        upgradeScript.addUpgrade(4000, 1.07f, "Click Crit Damage", " %", upgradeScript.UpgradeType.clickCritDamage, 999999999);
-        upgradeScript.addUpgrade(4000, 1.07f, "Click Radius", " Tiles", upgradeScript.UpgradeType.clickRadius, 5);
-        upgradeScript.addUpgrade(4000, 1.07f, "Pixel Value Increase", " %", upgradeScript.UpgradeType.moneyPerKill, 999999999);
+        upgradeScript.addUpgrade(1, 1.07f, "Pixel Damage", " Damage", upgradeScript.UpgradeType.pixelBaseDamage,999999999,1000);
+        upgradeScript.addUpgrade(10, 1.07f, "Pixel Attack Speed", " s", upgradeScript.UpgradeType.pixelAttackSpeed,20, 20);
+        upgradeScript.addUpgrade(100, 1.07f, "Pixel Crit Chance", " %", upgradeScript.UpgradeType.pixelCritChance, 50, 50);
+        upgradeScript.addUpgrade(1000, 1.07f, "Pixel Crit Damage", " %", upgradeScript.UpgradeType.pixelCritDamage, 999999999, 999);
+        upgradeScript.addUpgrade(4, 1.07f, "Click Damage", " Damage", upgradeScript.UpgradeType.clickBaseDamage, 999999999, 1);
+        upgradeScript.addUpgrade(400, 1.07f, "Click Crit Chance", "  %", upgradeScript.UpgradeType.clickCritChance, 50, 1);
+        upgradeScript.addUpgrade(4000, 1.07f, "Click Crit Damage", " %", upgradeScript.UpgradeType.clickCritDamage, 999999999, 1);
+        upgradeScript.addUpgrade(4000, 1.07f, "Click Radius", " Tiles", upgradeScript.UpgradeType.clickRadius, 8, 1);
+        upgradeScript.addUpgrade(4000, 1.07f, "Pixel Value Increase", " %", upgradeScript.UpgradeType.moneyPerKill, 999999999, 1);
+        upgradeScript.addUpgrade(4000, 1.07f, "Overkill Chainchance", " %", upgradeScript.UpgradeType.overkillChainChance, 90, 90);
+        upgradeScript.addUpgrade(4000, 1.07f, "Overkill Chaindamage", " %", upgradeScript.UpgradeType.overkillChainDamage, 50, 50);
         upgradeScript.updateValues();
     }
 
@@ -126,25 +129,93 @@ public class MenuManageScript : MonoBehaviour
 
     public static string getFormattedValue(double val, int floatingPositions)
     {
-        if (val < 1000)
+             if (val < 1000)
         {
             return Math.Round(val, floatingPositions)+"";
         }
-        else if (val < 1000000)
+        else if (val < 1000000d)
         {
-            return Math.Round(val / 1000, floatingPositions) + " k";
+            return Math.Round(val / 1000d, floatingPositions) + " k";
         }
-        else if (val < 1000000000)
+        else if (val < 1000000000d)
         {
-            return Math.Round(val / 1000000, floatingPositions) + " m";
+            return Math.Round(val / 1000000d, floatingPositions) + " m";
         }
-        else if (val < 1000000000000)
+        else if (val < 1000000000000d)
         {
-            return Math.Round(val / 1000000000, floatingPositions) + " b";
+            return Math.Round(val / 1000000000d, floatingPositions) + " b";
         }
-        else if (val < 1000000000000000)
+        else if (val < 1000000000000000d)
         {
-            return Math.Round(val / 1000000000000, floatingPositions) + " t";
+            return Math.Round(val / 1000000000000d, floatingPositions) + " t";
+        }
+        else if (val < 1000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000d, floatingPositions) + " qa";
+        }
+        else if (val < 1000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000d, floatingPositions) + " qi";
+        }
+        else if (val < 1000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000d, floatingPositions) + " sx";
+        }
+        else if (val < 1000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000d, floatingPositions) + " sp";
+        }
+        else if (val < 1000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000d, floatingPositions) + " o";
+        }
+        else if (val < 1000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000d, floatingPositions) + " n";
+        }
+        else if (val < 1000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000d, floatingPositions) + " d";
+        }
+        else if (val < 1000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000d, floatingPositions) + " ud";
+        }
+        else if (val < 1000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000d, floatingPositions) + " dd";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000d, floatingPositions) + " td";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000000d, floatingPositions) + " qad";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000000000d, floatingPositions) + " qid";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000000000000d, floatingPositions) + " sxd";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000000000000000d, floatingPositions) + " spd";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000000000000000000d, floatingPositions) + " od";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000000000000000000000d, floatingPositions) + " nd";
+        }
+        else if (val < 1000000000000000000000000000000000000000000000000000000000000000000d)
+        {
+            return Math.Round(val / 1000000000000000000000000000000000000000000000000000000000000000d, floatingPositions) + " v";
         }
         return "-1";
 

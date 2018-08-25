@@ -15,10 +15,10 @@ public class cameraScript : MonoBehaviour
     public GameObject world;
     Vector3 startPos;
     Vector3 endPos;
-    public float lerpTime = 1;
+    public float lerpTime = 0.3f;
     float currentLerpTime = 0;
     bool lerping = false;
-    bool camSticky=false;
+    bool camSticky=true;
     Color startColor;
     Color endColor;
     public float btnLerpTime = 0.5f;
@@ -88,6 +88,7 @@ public class cameraScript : MonoBehaviour
             if(oldPos!=-1&&newPos!=-1&&!lerping)
             {
                 velocity = Vector3.zero;
+                smoothDampTime = 0.3f;
                 targetPosition = new Vector3(transform.position.x, transform.position.y + panDistanceModifier * (oldPos - newPos) * panSpeedModifier, transform.position.z);
             }
             oldPos = -1;
@@ -163,11 +164,12 @@ public class cameraScript : MonoBehaviour
                 currentLerpTime = lerpTime;
             }
             float t = currentLerpTime / lerpTime;
-            if(transType==0)t = t * t * t * (t * (6f * t - 15f) + 10f);
-            if(transType==1)t = Mathf.Sin(t* Mathf.PI)/1.3f;
-            //  t = 1f - Mathf.Cos(t * Mathf.PI * 0.5f);
+           // if(transType==0)t = t * t * t * (t * (6f * t - 15f) + 10f);
+            if(transType==1) t = Mathf.Sin(t * Mathf.PI) / 1.3f;
+          //  if(transType==2) t = Mathf.Sin(t * Mathf.PI);
+            //     if (transType == 0) t = 1f - Mathf.Cos(t * Mathf.PI * 0.5f);
 
-            if(maxTVal<t)
+            if (maxTVal<t)
             {
                 maxTVal = t;
                 transform.position = Vector3.Lerp(startPos, endPos, t);
@@ -179,25 +181,33 @@ public class cameraScript : MonoBehaviour
             }
 
         }
-        if(targetPosition!=Vector3.zero) transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0.3f);
+        if(targetPosition!=Vector3.zero) transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothDampTime);
         if (velocity == Vector3.zero) targetPosition = Vector3.zero;
 
     }
-   
+    float smoothDampTime;
     public void moveUp()
     {
         if (!camSticky) return;
-        velocity = Vector3.zero;
-        targetPosition = Vector3.zero;
-        if (!lerping)
-        {
-            lerping = true;
-            startPos = transform.position;
-            endPos = new Vector3(transform.position.x, lowerBound+10, transform.position.z);
-            currentLerpTime = 0;
-            transType = 0;
-        }
-        else endPos = new Vector3(transform.position.x, lowerBound+10, transform.position.z);
+        targetPosition = new Vector3(transform.position.x, lowerBound, transform.position.z);
+        velocity = new Vector3(0, lowerBound-transform.position.y, 0);
+        smoothDampTime = 0.1f;
+       
+        /*  velocity = Vector3.zero;
+          targetPosition = Vector3.zero;
+          //if (!lerping)
+      //    {
+              lerping = true;
+              startPos = transform.position;
+              endPos = new Vector3(transform.position.x, lowerBound, transform.position.z);
+              currentLerpTime = 0;
+              transType = 0;
+        //  }
+        //  else
+        //  {
+              //currentLerpTime -= (lowerBound - transform.position.y) / lerpTime;
+        //      endPos = new Vector3(transform.position.x, lowerBound+10, transform.position.z);
+       //   }*/
     }
     public void setLowerBound(float lower)
     {
@@ -211,6 +221,7 @@ public class cameraScript : MonoBehaviour
     public void stickyCamValueChanged()
     {
         camSticky = !camSticky;
+
         moveUp();
     }
 }

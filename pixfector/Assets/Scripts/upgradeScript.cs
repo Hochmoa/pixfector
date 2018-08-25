@@ -15,9 +15,9 @@ public static class upgradeScript
     public static int countButtons;
     public static int margin;
     public static int buttonHeight;
-    public static void addUpgrade(float basePrice, float exponentialCost, string upgradeText, string effectText, UpgradeType upgradeType,int maxLevel)
+    public static void addUpgrade(float basePrice, float exponentialCost, string upgradeText, string effectText, UpgradeType upgradeType,int maxLevel,int currentLevel)
     {
-        Upgrade upgrade = new Upgrade(basePrice, exponentialCost, upgradeText, effectText, upgradeType,maxLevel);
+        Upgrade upgrade = new Upgrade(basePrice, exponentialCost, upgradeText, effectText, upgradeType,maxLevel,currentLevel);
         GameObject btn = GameObject.Instantiate(upgradeButton);
         upgrade.setButton(btn);
         btn.GetComponentInChildren<Text>().text = "ffs";
@@ -35,6 +35,7 @@ public static class upgradeScript
 
         upgrades.Add(upgrade);
     }
+
     public static void updateValues()
     {
         foreach (var item in upgrades)
@@ -53,26 +54,25 @@ public static class upgradeScript
     public class Upgrade
     {
 
-        public Upgrade(float basePrice,float exponentialCost, string upgradeText, string effectText, UpgradeType upgradeType,int maxLevel)
+        public Upgrade(float basePrice,float exponentialCost, string upgradeText, string effectText, UpgradeType upgradeType,int maxLevel,int currentLevel)
         {
             this.basePrice = basePrice;
             exp = exponentialCost;
-            level = 1;
             this.maxLevel = maxLevel;
             this.upgradeText = upgradeText;
             this.effectText = effectText;
             this.upgradeType = upgradeType;
-
+            this.level = currentLevel;
         }
         float basePrice;//base Price
         float exp;//expGrowth Price
-        int level;//level
-        int maxLevel;//maxLevel
+        float level;//level
+        float maxLevel;//maxLevel
         string upgradeText;
         public UpgradeType upgradeType;
         GameObject button;
         string effectText;
-        int upgradeCount;
+        float upgradeCount;
         double currentUgradePrice;
         /*
          * Upgrade Count n and Owned Money c
@@ -195,7 +195,13 @@ public static class upgradeScript
                 case UpgradeType.pixelCritDamage:
                     {
                         //  return -(-24f * level + 5f) / 95f;
-                        return 1+(level*0.1f);
+                        return 1 + (level * 0.1f);
+
+                    }
+                case UpgradeType.clickRadius:
+                    {
+                        //  return -(-24f * level + 5f) / 95f;
+                        return level/2;
 
                     }
             }
@@ -231,7 +237,9 @@ public static class upgradeScript
 
     public enum UpgradeType
     {
-        pixelBaseDamage, pixelAttackSpeed, pixelCritChance, pixelCritDamage, clickBaseDamage, clickRadius, clickCritChance, clickCritDamage, moneyPerKill
+        pixelBaseDamage, pixelAttackSpeed, pixelCritChance, pixelCritDamage,
+        clickBaseDamage, clickRadius, clickCritChance, clickCritDamage,
+        moneyPerKill, overkillChainChance, overkillChainDamage
     }
 
 }

@@ -8,7 +8,7 @@ public class TextManager : MonoBehaviour
     private static flashingText flashingText;
     private static GameObject canvas;
     private static float positioningDistributionModifier = 50f;
-    public static int maxTextCount=6000;
+    public static int maxTextCount=60;
     static List<flashingText> texts = new List<flashingText>();
     public static void Initialize()
     {

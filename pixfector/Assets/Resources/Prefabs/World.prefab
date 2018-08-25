@@ -195,7 +195,7 @@ MonoBehaviour:
   canvas: {fileID: 0}
   background: {fileID: 1166900006748374}
   endPixel: {fileID: 1380913372099772}
-  initMoney: 0
+  initMoney: 1e+18
   rainbowBackground: {fileID: 1098033145780278}
   nameGoodPixel: GoodPixel
   nameBadPixel: BadPixel

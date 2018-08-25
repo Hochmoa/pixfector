@@ -586,6 +586,11 @@ Prefab:
       propertyPath: canvas
       value: 
       objectReference: {fileID: 1712667342}
+    - target: {fileID: 114381206838597084, guid: e20415f9d0408dd43918addd54a82cd9,
+        type: 2}
+      propertyPath: initMoney
+      value: 10000000000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e20415f9d0408dd43918addd54a82cd9, type: 2}
   m_IsPrefabAsset: 0

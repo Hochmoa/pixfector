@@ -93,7 +93,7 @@ public class worldscript : MonoBehaviour
 
 
         }
-        MenuManageScript.money = initMoney;
+        canvas.GetComponent<MenuManageScript>().changeMoney(initMoney);
 
     }
     public void updateAttackSpeedOfPixels(float oldAttackSpeed)
@@ -236,29 +236,14 @@ public class worldscript : MonoBehaviour
         int initInfCount = infectPixels.Count;
         for (int i = 0; i < initInfCount; i++)
         {
-            GameObject p = infectPixels[i];
-
-            if (p == null || p.GetComponent<pixelScript>().neighbourCount(nameBadPixel) == 0)
+            if(infectPixels[i]==null)
             {
-                toRemove.Add(p);
+                toRemove.Add(infectPixels[i]);
                 continue;
             }
-            if (p.GetComponent<pixelScript>().isAnimating() || !p.GetComponent<pixelScript>().canAttack()) continue;
-            int toInfect = chooseNeighbour(p);
-            if (toInfect == -1)
+            if (infectPixels[i].GetComponent<pixelScript>().tryAttack(0)==-1)
             {
-                toRemove.Add(p);
-                continue;
-            }
-            bool isCrit = false;
-            float dmg = p.GetComponent<pixelScript>().cascadingDamage;
-            
-            if(dmg==-1) dmg =calculateDamage(out isCrit, AttackType.PIXEL);
-            bool died = p.GetComponent<pixelScript>().attack(toInfect, dmg, isCrit);
-            if (died)
-            {
-                canvas.GetComponent<MenuManageScript>().changeMoney(p.GetComponent<pixelScript>().getValue());
-              
+                toRemove.Add(infectPixels[i]);
             }
         }
         foreach (var item in toRemove)
@@ -289,23 +274,7 @@ public class worldscript : MonoBehaviour
         else isCrit = false;
         return dmg;
     }
-    private int chooseNeighbour(GameObject pixel)
-    {
-        int r = (int)(UnityEngine.Random.value * 4);
-        if (r == 4) r = 0;
-        for (int i = 0; i < 4; i++)
-        {
-            int index = (r + i) % 4;
-            if ((index == 2 && pixel.GetComponent<neighbourScript>().neighbours[index] == null) ||
-                index == 2 && lowerBound >= pixel.GetComponent<neighbourScript>().neighbours[index].transform.position.y) continue;
-            if (pixel.GetComponent<neighbourScript>().neighbours[index].CompareTag(nameBadPixel))
-            {
-                return index;
-            }
-        }
-
-        return -1;
-    }
+   
     private GameObject createPixel(float x, float y, string tagName)
     {
         GameObject p = GameObject.Instantiate(pixelPrefab, new Vector3(x, y), Quaternion.identity);
@@ -517,6 +486,7 @@ public class worldscript : MonoBehaviour
         pixelScript.nameBadPixel = nameBadPixel;
         pixelScript.nameEndPixel = nameEndPixel;
         pixelScript.world = this.gameObject;
+        pixelScript.canvas = this.canvas;
         pixelScript.attackReposValue = attackReposValue;
         pixelScript.attackSpeedDistributionModifier = attackSpeedDistributionModifier;
         pixelScript.attackAnimationStretch = attackAnimationStretch;
